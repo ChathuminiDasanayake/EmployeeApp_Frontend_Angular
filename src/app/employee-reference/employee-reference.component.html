@@ -1,0 +1,119 @@
+<div class="topnav">
+  <a class="active" routerLink="../">Employee </a>
+  <a routerLink="employeereference">Employee Reference</a>
+
+</div>
+
+
+<form action="action_page.php">
+  <div class="container" *ngIf=tooledit>
+    <div class="col-md-7 mt-5 mx-auto border border-info rounded" style="margin-bottom: 5%;">
+      <h1>Employee Type Registration</h1>
+     
+      <hr>
+
+      <label for="code" class="col-sm-8 col-form-label"><b>Code</b></label><br>
+      <input type="text" required #code="ngModel" placeholder="Enter the code" name="Code" [(ngModel)]="credentialtypes.Code">
+      <div [hidden]="code.valid || code.untouched" class="alert alert-danger"> Code is required</div>
+      <br>
+      <label for="description" class="col-sm-8 col-form-label"><b>Description</b></label><br>
+      <input type="text" required #description="ngModel" placeholder="Enter the Description" name="Description" id="description" [(ngModel)]="credentialtypes.Description">
+      <div [hidden]="description.valid || description.untouched" class="alert alert-danger"> Description is required</div>
+      <br>
+      <label for="sysdate" class="col-sm-8 col-form-label"><b>Sys Date</b></label><br>
+      <input type="date" #date="ngModel" class="form-control" name="SysDate" id="sysdate" [(ngModel)]="credentialtypes.SysDate">
+      <br>
+
+      
+
+      
+      <div form-raw>
+       
+          <button type="submit" class="registerbtn" (click)="registeremployeetype()">Register</button><br>
+          <button type="submit" class="registerbtn" (click)="reload()">Reload</button><br>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+              <table class="table table-striped table-hover table-bordered" id="myTable" *ngIf="tooledit" >
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>SysDate</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr *ngFor="let detailtype of employeetypedetails" >
+                    <td class="count"></td>
+                    <td>{{detailtype?.code }}</td>
+                    <td>{{detailtype?.description }}</td>
+                    <td>{{detailtype?.sysDate | date:'dd-MM-yyyy' }}</td>
+                    
+                    <td><button type="button" class="btn btn-success"><i class="far fa-edit" (click)="calling(detailtype)"></i></button></td>
+                    <td><button type="button" class="btn btn-danger"><i class="fas fa-trash" (click)="delete(detailtype.id)"></i></button></td>
+
+
+                  </tr>
+                </tbody>
+              </table>
+         
+<br>
+
+
+
+  <br>
+  <form #employetypeeditForm="ngForm" >
+    <div class="container">
+      <div class="col-md-7 mt-5 mx-auto border border-info rounded" style="margin-bottom: 10%;" *ngIf="tool">
+    <h1 class="h3 mb-3 font-weight-high text-black"><b>Edit Employee Types</b></h1>
+    <br>
+
+    <div class="form-row">
+      <div class="form-group col-md-8">
+        <label class="mr-sm-2 font-weight-high text-black"><h5><b>ID {{selectedemployeetype?.id }} </b></h5> </label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>Code</b></label>
+      <div class="col-md-6">
+        <input type="text" placeholder={{selectedemployeetype?.code}} class="form-control" name="id" [(ngModel)]="selectedemployeetype.code">
+
+      </div>
+    </div>
+    <br>
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>Description</b></label>
+      <div class="col-md-6">
+        <input type="text" placeholder={{selectedemployeetype?.description}} class="form-control" name="Code" [(ngModel)]="selectedemployeetype.description">
+      </div>
+    </div>
+    <br>
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>SysDate</b></label>
+      <div class="col-md-6">
+        <input type="date" placeholder={{selectedemployeetype?.sysDate}} class="form-control" name="Email" [ngModel]="selectedemployeetype.sysDate | date:'yyyy-MM-dd'  " (ngModelChange)="selectedemployeetype.sysDate = $event" >
+
+      </div>
+    </div>
+    <br>
+
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)=updateemptype()>Update</button>
+      <button type="button" class="btn btn-dark" (click)=reload()>Insert New Type</button>
+      
+    </div>
+
+  </div>
+</div>
+  </form>
+
+

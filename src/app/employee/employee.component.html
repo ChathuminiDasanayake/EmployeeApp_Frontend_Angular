@@ -1,0 +1,205 @@
+<div class="topnav">
+  <a class="active" routerLink="Emp">Employee </a>
+  <a routerLink="employeereference">Employee Reference</a>
+
+</div>
+<form action="action_page.php" #employeeTypeForm="ngForm" >
+  <div class="container" *ngIf=tooledit>
+    <div class="col-md-7 mt-5 mx-auto border border-info rounded" style="margin-bottom: 10%;">
+      <h1>Employee Registration</h1>
+     
+      <hr>
+      <label for="code" class="col-sm-8 col-form-label"><b>Code</b></label><br>
+      <input type="text" required #code="ngModel" placeholder="Enter your Code" name="Code" id="code" [(ngModel)]="credentials.Code">
+      <div [hidden]="code.valid || code.untouched" class="alert alert-danger"> Code is required</div>
+      <br>
+      <label for="name" class="col-sm-8 col-form-label"><b>Employee Name</b></label><br>
+      <input type="text" required #name="ngModel" placeholder="Enter your full name" name="Name" id="name" [(ngModel)]="credentials.Name">
+      <div [hidden]="name.valid ||name.untouched" class="alert alert-danger"> Employee Name is required</div>
+      <br>
+      <label for="email" class="col-sm-8 col-form-label"><b>Email</b></label><br>
+      <input type="email"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required #email="ngModel" placeholder="Enter Email" name="Email" id="email" [(ngModel)]="credentials.Email">
+      <div [hidden]="email.valid || email.untouched" class="alert alert-danger"> Email is invalid</div>
+      <br>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="control-label col-md-10"><b>Employee Type</b></label>
+          <div class="col-md-8">
+            <br>
+            <select class="emp-select" required #employee_type="ngModel" name="EmployeeType" [class.is-invalid]="employee_type.invalid && employee_type.touched" [(ngModel)]="credentials.EmployeeType" class="form-control">
+              <option selected>-select a type-</option>
+              <option *ngFor="let refer of ReferenceArray" value="{{refer.description}}">{{refer.description}}</option>
+
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="control-label col-md-10"><b>Date of Birth</b></label><br>
+        <div class="col-md-8">
+          <input type="date" required #date="ngModel" class="form-control" name="DOB" [(ngModel)]="credentials.DOB">
+
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="control-label col-md-4"><b>Gender</b></label><br>
+
+        <input type="radio" required #gender="ngModel" [class.is-invalid]="gender.invalid && gender.touched" name="Gender" id="male" value="Male" [(ngModel)]="credentials.Gender" checked> Male
+        <input type="radio" required #gender="ngModel" [class.is-invalid]="gender.invalid && gender.touched" name="Gender" id="female" value="Female" [(ngModel)]="credentials.Gender"> Female
+
+      </div>
+      <br>
+      <div class="form-row">
+        <label class="control-label col-md-2"><b>Active</b></label><br><br>
+        <div class="col-md-6">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox"  #active="ngModel" class="custom-control-input" id="defaultUnchecked1" [value]="yes" name="Active" [(ngModel)]="credentials.Active" nma>
+            <label class="custom-control-label" for="defaultUnchecked1"><b>Yes</b></label>
+          </div>
+
+
+        </div>
+      </div><br>
+            <div form-raw>
+              <div>
+                <button type="submit" [disabled]="((employeeTypeForm.form.invalid))" class="registerbtn" (click)="register()">Register</button>
+                <div>
+                <button type="button" class="registerbtn" (click)=reload()>Clear All</button>
+              </div>
+            </div>
+
+          </div>
+            </div>
+  </div>
+
+</form>
+<br>
+              <table class="table table-striped table-hover table-bordered" id="myTable" *ngIf="tooledit" >
+                <thead >
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Email</th>
+                    <th>EmployeeType</th>
+                    <th>DOB</th>
+                    <th>Gender</th>
+                    <th>Active</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr *ngFor="let detail of employeedetails" >
+                    <td class="count"></td>
+                    <td>{{detail?.name }}</td>
+                    <td>{{detail?.code }}</td>
+                    <td>{{detail?.email }}</td>
+                    <td>{{detail?.employeeType }}</td>
+                    <td>{{detail?.dob | date:'dd-MM-yyyy'}}</td>
+                    <td>{{detail?.gender }}</td>
+                    <td><span *ngIf="detail?.active">Yes</span><span *ngIf="!detail?.active">No</span></td>
+                    <td><button type="button" class="btn btn-success"><i class="far fa-edit" (click)="edit(detail)"></i></button></td>
+                    <td><button type="button" class="btn btn-danger"><i class="fas fa-trash" (click)="delete(detail.employeeID)"></i></button></td>
+                    <!--  <td><button type="button" class="btn btn-success"><i class="far fa-edit" (click)="edit(detail.employeeID)"></i></button></td> -->
+
+                  </tr>
+                </tbody>
+              </table>
+         
+<br>
+
+  
+
+  <br>
+  <form action="action_page.php" #employeeeditForm="ngForm" *ngIf="tool">
+    <div class="container">
+      <div class="col-md-7 mt-5 mx-auto border border-info rounded" style="margin-bottom: 10%;">
+    <h1 class="h3 mb-3 font-weight-high text-black"><b>Edit Employee Details</b></h1>
+    <br>
+
+    <div class="form-row">
+      <div class="form-group col-md-8">
+        <label class="mr-sm-2 font-weight-high text-black"><h5><b>Employee ID {{selectedemployee?.employeeID }} </b></h5> </label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>Code</b></label>
+      <div class="col-md-6">
+        <input type="text" placeholder={{selectedemployee?.code}} class="form-control" name="Code" [(ngModel)]="selectedemployee.Code">
+      </div>
+    </div>
+    <br>
+
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>Employee Name</b></label>
+      <div class="col-md-6">
+        <input type="text" placeholder={{selectedemployee?.name}} class="form-control" name="Name" [(ngModel)]="selectedemployee.Name">
+
+      </div>
+    </div>
+    <br>
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>Email</b></label>
+      <div class="col-md-6">
+        <input type="text" placeholder={{selectedemployee?.email}} class="form-control" name="Email" [(ngModel)]="selectedemployee.Email">
+
+      </div>
+    </div>
+    <br>
+
+    <div class="form-row">
+     
+        <label class="control-label col-md-3"><b>Employee Type</b></label>
+        <div class="col-md-6">
+          <br>
+          <select class="emp-select" class="col-md-6" required #employee_type="ngModel" placeholder={{selectedemployee?.employeeType}} name="EmployeeType" [class.is-invalid]="employee_type.invalid && employee_type.touched" [(ngModel)]="selectedemployee.employeeType" class="form-control">
+            <option *ngFor="let refer of ReferenceArray" value="{{refer.description}}">{{refer.description}}</option>
+          </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+      <label class="control-label col-md-3"><b>DOB</b></label>
+      <div class="col-md-6">
+        <input type="date" placeholder={{selectedemployee?.dob}} class="form-control" name="DOB" [ngModel]="selectedemployee.dob | date:'yyyy-MM-dd'  " (ngModelChange)="selectedemployee.dob = $event" >
+
+      </div>
+    </div>
+    <br>
+
+
+    <div class="form-row">
+      <label class="control-label col-md-4"><b>Gender</b></label><br>
+
+      <input type="radio" required #gender="ngModel" [class.is-invalid]="gender.invalid && gender.touched" name="Gender" id="male" value="Male" [(ngModel)]="selectedemployee.gender" checked> Male
+      <input type="radio" required #gender="ngModel" [class.is-invalid]="gender.invalid && gender.touched" name="Gender" id="female" value="Female" [(ngModel)]="selectedemployee.gender"> Female
+
+    </div>
+    <br>
+    <div class="form-row">
+      <label class="control-label col-md-2"><b>Active</b></label><br><br>
+      <div class="col-md-6">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" required #active="ngModel" class="custom-control-input" id="defaultUnchecked1" value="True" name="Active" [(ngModel)]="selectedemployee.active">
+          <label class="custom-control-label" for="defaultUnchecked1"><b>Yes</b></label>
+        </div>
+
+
+      </div>
+    </div><br>
+
+
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)=update()>Update</button>
+      <button type="button" class="btn btn-dark" (click)=reload()>Insert New Employee</button>
+     
+    </div>
+  </div>
+</div>
+  </form>
+
